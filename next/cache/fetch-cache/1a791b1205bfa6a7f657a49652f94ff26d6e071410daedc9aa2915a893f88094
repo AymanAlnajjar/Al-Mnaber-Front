@@ -1,0 +1,1 @@
+{"kind":"FETCH","data":{"headers":{"cache-control":"no-cache, private","connection":"close","content-type":"application/json","date":"Tue, 05 May 2026 09:09:31 GMT","host":"127.0.0.1:8000","vary":"Origin","x-powered-by":"PHP/8.3.6"},"body":"W10=","status":200,"url":"http://127.0.0.1:8000/api/blogs/homepage"},"revalidate":300,"tags":[]}
