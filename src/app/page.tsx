@@ -8,17 +8,29 @@ import Blogs from "@/components/Blogs";
 import FindUs from "@/components/FindUs";
 import JsonLd from "@/components/JsonLd";
 
+export const dynamic = "force-dynamic";
+
 const API = process.env.NEXT_PUBLIC_API_URL;
+
+// Always returns an array, no matter what the API sends back
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const safeArray = (data: any) => (Array.isArray(data) ? data : data?.data && Array.isArray(data.data) ? data.data : []);
+
+const safeFetch = (url: string) =>
+  fetch(url, { next: { revalidate: 300 } })
+    .then(r => (r.ok ? r.json() : []))
+    .then(safeArray)
+    .catch(() => []);
 
 async function fetchHomeData() {
   const [slides, stats, services, projects, clients, news, blogs] = await Promise.all([
-    fetch(`${API}/hero-slides`, { next: { revalidate: 300 } }).then(r => r.json()).catch(() => []),
-    fetch(`${API}/stats`, { next: { revalidate: 300 } }).then(r => r.json()).catch(() => []),
-    fetch(`${API}/services`, { next: { revalidate: 300 } }).then(r => r.json()).catch(() => []),
-    fetch(`${API}/projects/homepage`, { next: { revalidate: 300 } }).then(r => r.json()).catch(() => []),
-    fetch(`${API}/clients`, { next: { revalidate: 300 } }).then(r => r.json()).catch(() => []),
-    fetch(`${API}/news/homepage`, { next: { revalidate: 300 } }).then(r => r.json()).catch(() => []),
-    fetch(`${API}/blogs/homepage`, { next: { revalidate: 300 } }).then(r => r.json()).catch(() => []),
+    safeFetch(`${API}/hero-slides`),
+    safeFetch(`${API}/stats`),
+    safeFetch(`${API}/services`),
+    safeFetch(`${API}/projects/homepage`),
+    safeFetch(`${API}/clients`),
+    safeFetch(`${API}/news/homepage`),
+    safeFetch(`${API}/blogs/homepage`),
   ]);
   return { slides, stats, services, projects, clients, news, blogs };
 }
